@@ -1,115 +1,236 @@
-﻿namespace Assignment1
+﻿namespace Assignment2
 {
-    public class Medicine
+    internal class FavoriteMovie
     {
-        public int medicineCode;
-        public string medicineName;
-        public string manufactureName;
-        public int price;
-        public int quantity;
-        public string date;
-        public string expiryDate;
-        public int batchno;
+        static Dictionary<string, string> users = new Dictionary<string, string>();
+        static Dictionary<string, string> admins = new Dictionary<string, string>();
+        static Dictionary<string, string> movieCollection = new Dictionary<string, string>();
+        static Dictionary<string, string> favorites = new Dictionary<string, string>();
 
-        //public Medicine(int medicineCode, string medicineName, string manufactureName, int price, int quantity, DateTime date, int batchno)
-        //{
-        //    this.medicineCode = medicineCode;
-        //    this.medicineName = medicineName;
-        //    this.manufactureName = manufactureName;
-        //    this.price = price;
-        //    this.quantity = quantity;
-        //    this.date = date;
-        //    this.batchno = batchno;
-        //}
+        static bool isLoggedIn = false;
+        static bool isAdmin = false;
+        static bool isUser = false;
 
-        public void accept()
-        {
-            Console.WriteLine("Enter Medicine Code");
-            medicineCode = int.Parse(Console.ReadLine());
-           // Console.WriteLine(medicineCode);
-            Console.WriteLine("Enter Medicine Name");
-            medicineName = Console.ReadLine();
-            Console.WriteLine("Enter Manufacture Name");
-            manufactureName = Console.ReadLine();
-            Console.WriteLine("Enter Quantity");
-            quantity = int.Parse(Console.ReadLine());
-            Console.WriteLine("Enter Medicine Price");
-            price = int.Parse(Console.ReadLine());
-            Console.WriteLine("Enter Batch number");
-            batchno = int.Parse(Console.ReadLine());
-            Console.WriteLine("Enter Date");
-            date = Console.ReadLine();
-            Console.WriteLine("Enter expiry date");
-            expiryDate = Console.ReadLine();
-            print();
-        }
-
-        public void print()
-        {
-            Console.WriteLine(medicineCode);
-
-            Console.WriteLine(medicineName);
-            Console.WriteLine(manufactureName);
-            Console.WriteLine(price);
-            Console.WriteLine(quantity);
-            Console.WriteLine(batchno);
-            Console.WriteLine(date);
-            Console.WriteLine(expiryDate);
-        }
-    }
-    public class Sales
-    {
-        public int medicineCode;
-        public int quantitySold;
-        public int plannedSales;
-        public int actualSales;
-        public string region;
-
-        //public Sales(int medicineCode, int quantitySold, int plannedSales, int actualSales, string region)
-        //{
-        //    this.medicineCode = medicineCode;
-        //    this.quantitySold = quantitySold;
-        //    this.plannedSales = plannedSales;
-        //    this.actualSales = actualSales;
-        //    this.region = region;
-        //}
-
-        public void accept()
-        {
-            Console.WriteLine("Enter Medicine Code");
-            medicineCode = int.Parse(Console.ReadLine());
-            Console.WriteLine("Enter Quntity Sold");
-            quantitySold = int.Parse(Console.ReadLine());
-            Console.WriteLine("Enter Planned Sales");
-            plannedSales = int.Parse(Console.ReadLine());
-            Console.WriteLine("Enter Actual Sales");
-            actualSales = int.Parse(Console.ReadLine());
-            Console.WriteLine("Enter Region");
-            region = Console.ReadLine();
-            print();
-        }
-        public void print()
-        {
-            Console.WriteLine(medicineCode);
-            Console.WriteLine(quantitySold);
-            Console.WriteLine(plannedSales);
-            Console.WriteLine(actualSales);
-            Console.WriteLine(region);
-        }
-    }
-    internal class Program
-    {
         static void Main(string[] args)
         {
-            Medicine med = new Medicine();
-            med.accept();
-            //Console.WriteLine("============================");
-           
 
-            Sales sales = new Sales();
-            sales.accept();
-            
-            
+            users.Add("user", "Snehal@4321");
+            admins.Add("Admin", "Snehal@4321");
+            Console.WriteLine("Welcome to the Movie App!");
+
+            string currentUser = "";
+
+            while (true)
+            {
+                Console.WriteLine("\nPlease select an option:");
+                Console.WriteLine("1. Login");
+                Console.WriteLine("2. Exit");
+
+                int choice;
+                if (!int.TryParse(Console.ReadLine(), out choice))
+                {
+                    Console.WriteLine("Invalid choice. Please try again.");
+                    continue;
+                }
+
+                switch (choice)
+                {
+                    case 1:
+                        Console.Write("Enter username: ");
+                        string username1 = Console.ReadLine();
+                        string username = username1.ToLower();
+                        Console.Write("Enter password: ");
+                        string password = Console.ReadLine();
+
+
+
+                        if (admins.ContainsKey(username) && admins[username] == password)
+                        {
+                            isLoggedIn = true;
+                            isAdmin = true;
+                            currentUser = username;
+                            Console.WriteLine("\nAdmin login successful!");
+                        }
+                        else if (users.ContainsKey(username) && users[username] == password)
+                        {
+                            isLoggedIn = true;
+                            isUser = true;
+                            currentUser = username;
+                            Console.WriteLine("\nUser login successful!");
+                        }
+                        else
+                        {
+                            Console.WriteLine("\nInvalid username or password. Please try again.");
+                        }
+
+                        break;
+                    case 2:
+                        Console.WriteLine("Exiting the Movie App. Goodbye!");
+                        return;
+                    default:
+                        Console.WriteLine("Invalid choice. Please try again.");
+                        break;
+                }
+
+                if (isLoggedIn)
+                {
+                    if (isAdmin)
+                    {
+                        Admin();
+                    }
+                    else if (isUser)
+                    {
+                        User();
+                    }
+                }
+            }
         }
+
+
+        static void Admin()
+        {
+            while (true)
+            {
+                Console.WriteLine("\nAdmin Menu:");
+                Console.WriteLine("1. Show movie list");
+                Console.WriteLine("2. Add movie to collection");
+                Console.WriteLine("3. Remove movie from collection");
+                Console.WriteLine("4. Logout");
+
+                int choice;
+                if (!int.TryParse(Console.ReadLine(), out choice))
+                {
+                    Console.WriteLine("Invalid choice. Please try again.");
+                    continue;
+                }
+
+                switch (choice)
+                {
+                    case 1:
+                        foreach (KeyValuePair<string, string> i in movieCollection)
+                        {
+                            Console.WriteLine(i.Key);
+                        }
+                        break;
+                    case 2:
+                        Console.Write("Enter the name of the movie to add: ");
+                        string movie = Console.ReadLine();
+                        Console.Write("Enter the description of the movie: ");
+                        string description = Console.ReadLine();
+                        movieCollection.Add(movie, description);
+                        Console.WriteLine($"Movie '{movie}' added to the collection.");
+                        break;
+                    case 3:
+                        Console.WriteLine("Movies List");
+                        foreach (KeyValuePair<string, string> i in movieCollection)
+                        {
+                            Console.WriteLine(i.Key);
+                        }
+
+                        Console.Write("Enter the name of the movie to remove: ");
+                        string movieToRemove = Console.ReadLine();
+                        if (movieCollection.ContainsKey(movieToRemove))
+                        {
+                            movieCollection.Remove(movieToRemove);
+                            Console.WriteLine($"Movie '{movieToRemove}' removed from the collection.");
+                            RemoveMovieFromFavorites(movieToRemove);
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Movie '{movieToRemove}' not found in the collection.");
+                        }
+                        break;
+                    case 4:
+                        Console.WriteLine("Logging out from admin account.");
+                        isAdmin = false;
+                        return;
+                    default:
+                        Console.WriteLine("Invalid choice. Please try again.");
+                        break;
+                }
+            }
+        }
+
+        static void User()
+        {
+            while (true)
+            {
+                Console.WriteLine("\nUser Menu:");
+                Console.WriteLine("1. Show movie list");
+                Console.WriteLine("2. Add movie to favorites list");
+                Console.WriteLine("3. Remove movie from favorites list");
+                Console.WriteLine("4. Logout");
+
+                int choice;
+                if (!int.TryParse(Console.ReadLine(), out choice))
+                {
+                    Console.WriteLine("Please select valid option.");
+                    continue;
+                }
+
+                switch (choice)
+                {
+                    case 0:
+                        foreach (KeyValuePair<string, string> i in favorites)
+                        {
+                            Console.WriteLine(i.Key);
+                        }
+                        break;
+                    case 1:
+                        foreach (KeyValuePair<string, string> i in movieCollection)
+                        {
+                            Console.WriteLine(i.Key);
+                        }
+                        Console.Write("Enter the name of the movie to add to favorites list: ");
+                        string movie = Console.ReadLine();
+                        if (movieCollection.ContainsKey(movie))
+                        {
+                            favorites.Add(movie, movieCollection[movie]);
+                            Console.WriteLine($"Movie '{movie}' Added to favorites list.");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Movie '{movie}' not found in the collection.");
+                        }
+                        break;
+                    case 2:
+                        Console.WriteLine("Favorites List");
+                        foreach (KeyValuePair<string, string> i in favorites)
+                        {
+                            Console.WriteLine(i.Key);
+                        }
+
+                        Console.Write("Enter the name of the movie to remove from favorites list: ");
+                        string movieToRemove = Console.ReadLine();
+                        if (favorites.ContainsKey(movieToRemove))
+                        {
+                            favorites.Remove(movieToRemove);
+                            Console.WriteLine($"Movie '{movieToRemove}' removed from favorites list.");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Movie '{movieToRemove}' not found in favorites list.");
+                        }
+                        break;
+                    case 3:
+                        Console.WriteLine("Logged out from user account.");
+                        isUser = false;
+                        return;
+                    default:
+                        Console.WriteLine("Please select valid option.");
+                        break;
+                }
+            }
+        }
+
+        static void RemoveMovieFromFavorites(string movieToRemove)
+        {
+            if (favorites.ContainsKey(movieToRemove))
+            {
+                favorites.Remove(movieToRemove);
+                Console.WriteLine($"Movie '{movieToRemove}' removed from favoriteslist.");
+            }
+        }
+
     }
 }
